@@ -1,0 +1,3 @@
+/home/user/src/spotlight/build/CMakeFiles/spotlight.dir
+/home/user/src/spotlight/build/CMakeFiles/edit_cache.dir
+/home/user/src/spotlight/build/CMakeFiles/rebuild_cache.dir
