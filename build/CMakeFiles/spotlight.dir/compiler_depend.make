@@ -255,6 +255,11 @@ CMakeFiles/spotlight.dir/spotlight.cpp.o: ../spotlight.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
   /usr/include/x86_64-linux-gnu/bits/sigthread.h \
   /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
+  /usr/include/c++/11/chrono \
+  /usr/include/c++/11/ratio \
+  /usr/include/c++/11/limits \
+  /usr/include/c++/11/ctime \
+  /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/GL/gl.h \
   /usr/include/GL/glext.h \
@@ -270,7 +275,21 @@ CMakeFiles/spotlight.dir/spotlight.cpp.o: ../spotlight.cpp \
   /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
   /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
   /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
-  /usr/include/x86_64-linux-gnu/bits/iscanonical.h
+  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
+  /usr/include/c++/11/thread \
+  /usr/include/c++/11/bits/std_thread.h \
+  /usr/include/c++/11/tuple \
+  /usr/include/c++/11/utility \
+  /usr/include/c++/11/bits/stl_relops.h \
+  /usr/include/c++/11/array \
+  /usr/include/c++/11/bits/uses_allocator.h \
+  /usr/include/c++/11/bits/invoke.h \
+  /usr/include/c++/11/bits/refwrap.h \
+  /usr/include/c++/11/bits/unique_ptr.h \
+  /usr/include/c++/11/bits/this_thread_sleep.h \
+  /usr/include/c++/11/mutex \
+  /usr/include/c++/11/bits/std_mutex.h \
+  /usr/include/c++/11/bits/unique_lock.h
 
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o: ../third_party/imgui/backends/imgui_impl_glfw.cpp \
   /usr/include/stdc-predef.h \
@@ -1374,8 +1393,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/clzerointrin.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/clflushoptintrin.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/cldemoteintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/bmi2intrin.h:
@@ -1392,8 +1409,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
-/usr/include/limits.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
 
 /usr/include/x86_64-linux-gnu/bits/dl_find_object.h:
@@ -1407,6 +1422,26 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 ../third_party/imgui/backends/imgui_impl_opengl3_loader.h:
 
 ../third_party/imgui/backends/imgui_impl_opengl3.cpp:
+
+/usr/include/c++/11/bits/std_mutex.h:
+
+/usr/include/c++/11/mutex:
+
+/usr/include/c++/11/bits/unique_ptr.h:
+
+/usr/include/c++/11/bits/invoke.h:
+
+/usr/include/c++/11/bits/unique_lock.h:
+
+/usr/include/c++/11/bits/uses_allocator.h:
+
+/usr/include/c++/11/array:
+
+/usr/include/limits.h:
+
+/usr/include/c++/11/bits/stl_relops.h:
+
+/usr/include/c++/11/tuple:
 
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
@@ -1425,6 +1460,18 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/c++/11/math.h:
 
 /usr/include/KHR/khrplatform.h:
+
+/usr/include/GL/glext.h:
+
+/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
+/usr/include/GLFW/glfw3.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/clflushoptintrin.h:
+
+/usr/include/c++/11/bits/parse_numbers.h:
+
+/usr/include/c++/11/ctime:
 
 /usr/include/x86_64-linux-gnu/bits/locale.h:
 
@@ -1449,6 +1496,10 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+
+/usr/include/GL/gl.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/c++/11/bits/nested_exception.h:
 
@@ -1656,6 +1707,8 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
+/usr/include/c++/11/bits/std_thread.h:
+
 /usr/include/c++/11/bits/stl_iterator_base_funcs.h:
 
 /usr/include/c++/11/bits/cpp_type_traits.h:
@@ -1722,8 +1775,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
-/usr/include/x86_64-linux-gnu/bits/wordsize.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h:
 
 /usr/include/c++/11/debug/debug.h:
@@ -1749,8 +1800,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
-
-/usr/include/GL/glext.h:
 
 /usr/include/c++/11/bits/streambuf.tcc:
 
@@ -1782,11 +1831,13 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
 
+/usr/include/c++/11/bits/refwrap.h:
+
 /usr/include/linux/stddef.h:
 
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+/usr/include/c++/11/thread:
 
-/usr/include/GL/gl.h:
+/usr/include/c++/11/ratio:
 
 /usr/include/math.h:
 
@@ -1858,10 +1909,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h:
 
-/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
-
-/usr/include/GLFW/glfw3.h:
-
 /usr/include/c++/11/bits/locale_classes.h:
 
 /usr/include/linux/stat.h:
@@ -1906,6 +1953,10 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/c++/11/cstdio:
 
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/c++/11/chrono:
+
 /usr/include/stdio.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
@@ -1942,6 +1993,8 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/c++/11/bits/locale_classes.tcc:
 
+/usr/include/c++/11/utility:
+
 /usr/include/c++/11/ios:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h:
@@ -1957,6 +2010,8 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/asm/types.h:
 
 /usr/include/c++/11/bits/streambuf_iterator.h:
+
+/usr/include/c++/11/bits/this_thread_sleep.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
@@ -2029,3 +2084,5 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/bits/sigthread.h:
 
 /usr/include/x86_64-linux-gnu/bits/signal_ext.h:
+
+/usr/include/c++/11/limits:

@@ -6,16 +6,23 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <chrono>
 
 // Settings for our circle
 static ImVec2 circle_center = ImVec2(0.5f, 0.5f); // Relative to window size
-static float circle_radius = 0.05f; // Relative to window size
+static float circle_radius = 0.2f; // Relative to window size
 static ImVec4 circle_color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f); // RGBA
 static bool use_second_monitor = true;
 
 static ImVec2 central_circle_center = ImVec2(0.5f, 0.5f); // In normalized coordinates
-static float central_circle_radius = 0.05f;
-static ImVec4 central_circle_color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+static float central_circle_radius = 0.1f;
+static ImVec4 central_circle_color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+static float drift_speed = 0.1f;
+
+static bool calibrating = false;
 
 // Function to get monitor information
 std::vector<GLFWmonitor*> get_monitors() {
@@ -26,6 +33,10 @@ std::vector<GLFWmonitor*> get_monitors() {
         monitors.push_back(m[i]);
     }
     return monitors;
+}
+
+ImVec2 lerp(const ImVec2& a, const ImVec2& b, float t) {
+    return ImVec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
 }
 
 // Function to create a borderless window on a specific monitor
@@ -91,7 +102,7 @@ int main() {
         return -1;
     }
     glfwMakeContextCurrent(control_window);
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(0); // disable vsync
 
     // Initialize Dear ImGui
     IMGUI_CHECKVERSION();
@@ -111,6 +122,32 @@ int main() {
         }
     }
 
+    std::vector<shaman::Object> latest_boxes;
+    std::mutex box_mutex;
+
+    std::atomic<bool> running{true};
+    
+
+    std::thread reader_thread;
+    {
+        auto thread_func = [&]() {
+            std::vector<shaman::Object> temp;
+            while (running) {
+                uint64_t writer_timestamp = 0;
+                if (reader.pop(temp, writer_timestamp)) {
+
+
+                    std::lock_guard<std::mutex> lock(box_mutex);
+                    latest_boxes = temp;
+
+                    // store the timestamp (use atomic or mutex if accessed outside)
+                    uint64_t now = get_time_us();
+                    std::cout << "write - read latency: " << (now - writer_timestamp) / 1000.0 << std::endl;
+                }
+            }
+        };
+        reader_thread = std::thread(thread_func);
+    }
     // Main loop
     while (!glfwWindowShouldClose(control_window)) {
         // Poll and handle events (inputs, window resize, etc.)
@@ -139,13 +176,16 @@ int main() {
                     glfwSetWindowShouldClose(control_window, true);
                 }
             }
-            ImGui::SliderFloat("Central Circle Radius", &central_circle_radius, 0.01f, 0.5f);
+            ImGui::SliderFloat("Central Circle Radius", &central_circle_radius, 0.01f, 1.0f);
             ImGui::ColorEdit4("Central Circle Color", (float*)&central_circle_color);
             
             if (ImGui::Button("Reset Central Position")) {
                 central_circle_center = ImVec2(0.5f, 0.5f); // Recenter
             }
 
+            ImGui::SliderFloat("Drift Speed", &drift_speed, 0.005f, 0.2f);
+
+            ImGui::Checkbox("Calibration Mode", &calibrating);
             ImGui::End();
         }
 
@@ -185,29 +225,37 @@ int main() {
             // Accumulated push vector
             ImVec2 total_push = ImVec2(0, 0);
 
-            if (reader.pop(boxes)) {
-                std::cout << "received " << boxes.size() << " vectors\n";
-                for (const auto& obj : boxes) {
-                    float cx = (obj.rect.x - 690) / 1831 * height + (width - height) / 2;
-                    float cy = (obj.rect.y - 129) / 1848 * height;
-                    float radius = obj.rect.width * 0.01f * circle_radius * std::min(width, height);
-
-                    // Calculate vector between centers
-                    float dx = central_pixel_pos.x - cx;
-                    float dy = central_pixel_pos.y - cy;
-                    float dist_sq = dx * dx + dy * dy;
-                    float min_dist = central_pixel_radius + radius;
-
-                    if (dist_sq < min_dist * min_dist && dist_sq > 0.0f) {
-                        float dist = std::sqrt(dist_sq);
-                        float push_strength = (min_dist - dist) * 0.5f; // Push half the overlap
-                        total_push.x += (dx / dist) * push_strength;
-                        total_push.y += (dy / dist) * push_strength;
-                    }
-
-                    draw_filled_circle(cx, cy, radius, circle_color);
-                }
+            {
+                std::lock_guard<std::mutex> lock(box_mutex);
+                boxes = latest_boxes;
             }
+
+            float xcenter, ycenter;
+            for (const auto& obj : boxes) {
+                xcenter = obj.rect.x + obj.rect.width / 2;
+                ycenter = obj.rect.y;
+                float cx = (xcenter - 1107) / 1020 * height + (width - height) / 2;
+                cx = width - cx; // reflect so projection shows up correctly
+                float cy = (ycenter - 543) / 1020 * height;
+                float radius = circle_radius * height;
+
+                // Calculate vector between centers
+                float dx = central_pixel_pos.x - cx;
+                float dy = central_pixel_pos.y - cy;
+                float dist_sq = dx * dx + dy * dy;
+                float min_dist = central_pixel_radius + radius;
+
+                if (dist_sq < min_dist * min_dist && dist_sq > 0.0f) {
+                    float dist = std::sqrt(dist_sq);
+                    float push_strength = (min_dist - dist) * 0.5f; // Push half the overlap
+                    total_push.x += (dx / dist) * push_strength;
+                    total_push.y += (dy / dist) * push_strength;
+                }
+
+                draw_filled_circle(cx, cy, radius, circle_color);
+                draw_filled_circle(cx, cy, 3 * radius / 4, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));  
+            }
+            
 
             // Apply push to central circle's position (in pixel space)
             central_pixel_pos.x += total_push.x;
@@ -217,6 +265,16 @@ int main() {
             central_pixel_pos.x = std::max(central_pixel_radius, std::min((float)width - central_pixel_radius, central_pixel_pos.x));
             central_pixel_pos.y = std::max(central_pixel_radius, std::min((float)height - central_pixel_radius, central_pixel_pos.y));
 
+            // drift back to center
+            const ImVec2 center_normalized(0.5f, 0.5f);
+            const float push_magnitude = std::sqrt(total_push.x * total_push.x + total_push.y * total_push.y);
+            if (push_magnitude < 0.05f) {
+                // Drift in normalized space
+                central_circle_center = lerp(central_circle_center, center_normalized, drift_speed); 
+                central_pixel_pos.x = central_circle_center.x * width;
+                central_pixel_pos.y = central_circle_center.y * height;
+            }
+
             // Convert back to normalized coordinates
             central_circle_center.x = central_pixel_pos.x / width;
             central_circle_center.y = central_pixel_pos.y / height;
@@ -224,12 +282,21 @@ int main() {
             // Draw central circle
             draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y, central_pixel_radius, central_circle_color);
 
+            if (calibrating) {
+                draw_filled_circle(width / 2.0 - height / 2.0, 0, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+                draw_filled_circle(width / 2.0 + height / 2.0, 0, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+                draw_filled_circle(width / 2.0 - height / 2.0, height, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+                draw_filled_circle(width / 2.0 + height / 2.0, height, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+            }
 
             glfwSwapBuffers(spotlight_window);
         }
     }
 
     // Cleanup
+    running = false;
+    reader_thread.join();
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
