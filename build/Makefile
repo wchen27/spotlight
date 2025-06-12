@@ -129,6 +129,30 @@ spotlight/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/build
 .PHONY : spotlight/fast
 
+serial/serial.o: serial/serial.cpp.o
+.PHONY : serial/serial.o
+
+# target to build an object file
+serial/serial.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/serial/serial.cpp.o
+.PHONY : serial/serial.cpp.o
+
+serial/serial.i: serial/serial.cpp.i
+.PHONY : serial/serial.i
+
+# target to preprocess a source file
+serial/serial.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/serial/serial.cpp.i
+.PHONY : serial/serial.cpp.i
+
+serial/serial.s: serial/serial.cpp.s
+.PHONY : serial/serial.s
+
+# target to generate assembly for a file
+serial/serial.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/serial/serial.cpp.s
+.PHONY : serial/serial.cpp.s
+
 spotlight.o: spotlight.cpp.o
 .PHONY : spotlight.o
 
@@ -330,6 +354,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... spotlight"
+	@echo "... serial/serial.o"
+	@echo "... serial/serial.i"
+	@echo "... serial/serial.s"
 	@echo "... spotlight.o"
 	@echo "... spotlight.i"
 	@echo "... spotlight.s"

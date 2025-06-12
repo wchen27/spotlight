@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/user/src/spotlight/third_party/imgui -I/home/user/src/spotlight/third_party/imgui/backends
+CXX_INCLUDES = -I/home/user/src/spotlight/third_party/imgui -I/home/user/src/spotlight/third_party/imgui/backends -I/home/user/src/spotlight/serial
 
 CXX_FLAGS = -std=gnu++11
 

@@ -15,6 +15,7 @@ include_directories(
     ${OPENGL_INCLUDE_DIRS}
     third_party/imgui
     third_party/imgui/backends
+    serial
 )
 
 add_definitions(${GLFW_CFLAGS_OTHER})
@@ -29,6 +30,7 @@ set(IMGUI_SOURCES
     third_party/imgui/imgui_widgets.cpp
     third_party/imgui/backends/imgui_impl_glfw.cpp
     third_party/imgui/backends/imgui_impl_opengl3.cpp
+    serial/serial.cpp
 )
 
 # Main executable

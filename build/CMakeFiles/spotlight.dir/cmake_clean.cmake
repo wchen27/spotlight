@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/spotlight.dir/serial/serial.cpp.o"
+  "CMakeFiles/spotlight.dir/serial/serial.cpp.o.d"
   "CMakeFiles/spotlight.dir/spotlight.cpp.o"
   "CMakeFiles/spotlight.dir/spotlight.cpp.o.d"
   "CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o"
