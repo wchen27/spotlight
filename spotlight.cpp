@@ -38,12 +38,34 @@ static bool curr_running[3] = {false, false, false};
 
 // object circle settings
 static ImVec2 circle_center = ImVec2(0.5f, 0.5f); // Relative to window size
-static float circle_radius = 0.2f; // Relative to window size
+static float circle_radius = 0.12f; // Relative to window size
 static ImVec4 circle_color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f); // RGBA
-static ImVec4 alternate_circle_color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
-static int circle_segments = 64; // Number of segments for the circle
+static ImVec4 alternate_circle_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+static int circle_segments = 12; // Number of segments for the circle
 static float inner_radius = 0.75;
+static bool randomize_rotation_direction = true;
+static int rotation_direction = 1;
 static float theta_rotation = 0.0f; // Rotation angle in radians
+static bool random_rotation = true; // Random rotation for each circle
+static float min_rotation = 6.0f;
+static float max_rotation = 12.0f; 
+static float min_rotation_time = 0.5f;
+static float max_rotation_time = 5.0f;
+static float rotation_time = 1.0f; // Time to rotate the circle
+static bool randomize_rotation_time = true;
+static bool randomize_rotation_delay = true;
+static float rotation_delay = 0.0f; // Delay before starting the rotation
+static float min_rotation_delay = 0.0f;
+static float max_rotation_delay = 5.0f;
+static bool rotation_running = false; // Flag to indicate if rotation is running
+static double rotation_start_time = -1.0; // Start time for rotation
+static float target_theta = 0.0f;
+static float start_theta = 0.0f;
+static float actual_rotation_time = 1.0f;
+static float actual_rotation_delay = 0.0f;
+static bool in_rotation_phase = false;
+static bool in_delay_phase = false;
+
 static bool use_second_monitor = true;
 
 static ImVec2 central_circle_center = ImVec2(0.5f, 0.5f); // In normalized coordinates
@@ -447,7 +469,44 @@ int main() {
                 ImGui::SliderFloat("Circle Radius", &circle_radius, 0.01f, 0.5f);
                 ImGui::SliderFloat("Inner Circle Radius", &inner_radius, 0.01f, 1.0f);
                 ImGui::ColorEdit4("Circle Color", (float*)&circle_color);
-                ImGui::SliderFloat("Circle Rotation", &theta_rotation, 0.0f, 6.28319f);
+                ImGui::Checkbox("Random Rotation", &random_rotation);
+                ImGui::Checkbox("Randomize Rotation Time", &randomize_rotation_time);
+                ImGui::Checkbox("Randomize Rotation Delay", &randomize_rotation_delay);
+                
+                if (random_rotation) {
+                    ImGui::SliderFloat("Min Rotation (magnitude)", &min_rotation, 0.0f, 60.0f);
+                    ImGui::SliderFloat("Max Rotation (magnitude)", &max_rotation, 0.0f, 60.0f);
+                    ImGui::SliderFloat("Min Rotation Time", &min_rotation_time, 0.0f, 10.0f);
+                    ImGui::SliderFloat("Max Rotation Time", &max_rotation_time, 0.0f, 10.0f);
+                    
+                    ImGui::Checkbox("Randomize Direction", &randomize_rotation_direction);
+                    if (!randomize_rotation_direction) {
+                        ImGui::RadioButton("CW", &rotation_direction, 1); ImGui::SameLine();
+                        ImGui::RadioButton("CCW", &rotation_direction, -1);
+                    }
+
+                    if (randomize_rotation_delay) {
+                        ImGui::SliderFloat("Min Rotation Delay", &min_rotation_delay, 0.0f, 10.0f);
+                        ImGui::SliderFloat("Max Rotation Delay", &max_rotation_delay, 0.0f, 10.0f);
+                    } else {
+                        ImGui::SliderFloat("Rotation Delay", &rotation_delay, 0.0f, 10.0f);
+                    }
+                } else {
+                    ImGui::SliderFloat("Theta Rotation", &theta_rotation, 0.0f, 6.28319f); // 2 * PI
+                }
+
+                if (rotation_running) {
+                    if (ImGui::Button("Stop Rotation")) {
+                        rotation_running = false;
+                        in_rotation_phase = false;
+                        in_delay_phase = false;
+                    } 
+                } else {
+                    if (ImGui::Button("Start Rotation")) {
+                        rotation_running = true;
+                        rotation_start_time = ImGui::GetTime();
+                    } 
+                }
                 ImGui::ColorEdit4("Alternate Circle Color", (float*)&alternate_circle_color);
                 ImGui::SliderInt("Circle Segments", &circle_segments, 3, 128);
             }
@@ -586,7 +645,7 @@ int main() {
             central_circle_center.y = central_pixel_pos.y / height;
 
             if (!dynamic_circle) {
-                draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y, central_pixel_radius, central_circle_color,  central_circle_segments);
+                draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y, central_pixel_radius, central_circle_color, alternate_central_circle_color, central_circle_segments);
             } else {
                 double elapsed = ImGui::GetTime() - dynamic_circle_start_time;
 
@@ -598,11 +657,62 @@ int main() {
                     );
                     draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y,
                                     dynamic_circle_radius * std::min(width, height),
-                                    central_circle_color, alternate_central_circle_color, central_circle_segments);
+                                    central_circle_color, central_circle_segments);
                 } else { 
                     dynamic_circle_radius = 0.0f; // Reset radius
                 }
             }
+
+            // rotate circles if enabled
+            if (rotation_running) {
+                double now = ImGui::GetTime();
+            
+                if (!in_rotation_phase && !in_delay_phase) {
+                    // Initialize a new rotation
+                    start_theta = theta_rotation;
+            
+                    // Randomize target_theta
+                    if (random_rotation) {
+                        float magnitude = min_rotation + static_cast<float>(rand()) / RAND_MAX * (max_rotation - min_rotation);
+                        int dir = randomize_rotation_direction ? (rand() % 2 == 0 ? 1 : -1) : rotation_direction;
+                        target_theta = theta_rotation + dir * magnitude;
+                    }
+            
+                    // Randomize rotation time
+                    if (randomize_rotation_time) {
+                        actual_rotation_time = min_rotation_time + static_cast<float>(rand()) / RAND_MAX * (max_rotation_time - min_rotation_time);
+                    } else {
+                        actual_rotation_time = rotation_time;
+                    }
+            
+                    // Randomize delay
+                    if (randomize_rotation_delay) {
+                        actual_rotation_delay = min_rotation_delay + static_cast<float>(rand()) / RAND_MAX * (max_rotation_delay - min_rotation_delay);
+                    } else {
+                        actual_rotation_delay = rotation_delay;
+                    }
+            
+                    rotation_start_time = now;
+                    in_rotation_phase = true;
+                }
+            
+                if (in_rotation_phase) {
+                    float t = static_cast<float>((now - rotation_start_time) / actual_rotation_time);
+                    if (t >= 1.0f) {
+                        theta_rotation = target_theta;
+                        in_rotation_phase = false;
+                        in_delay_phase = true;
+                        rotation_start_time = now;
+                    } else {
+                        theta_rotation = start_theta + t * (target_theta - start_theta);
+                    }
+                } else if (in_delay_phase) {
+                    if ((now - rotation_start_time) >= actual_rotation_delay) {
+                        in_delay_phase = false;
+                    }
+                }
+            }
+
             // Draw central circle
             
 
