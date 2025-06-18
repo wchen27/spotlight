@@ -264,7 +264,7 @@ int main() {
 
         // Control window UI
         {
-            if (ImGui::Begin("Syringe Control")) {
+            if (ImGui::Begin("Serial Control")) {
                 // window for serial communication functions
                 
                 static std::vector<std::string> config_files = list_json_files_in_folder();
