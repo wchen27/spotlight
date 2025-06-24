@@ -20,6 +20,12 @@ static int selected_port = -1;
 static char send_buffer[128] = "";
 static std::string recv_data;
 
+static SerialPort serial_door;
+static int selected_door_port = -1;
+static std::vector<std::string> door_port_list;
+static int object_limit = 3;
+static int prev_count = -1;
+
 // pump control settings
 const char pump_ids[] = { 'x', 'y', 'z' };
 static int cycles[3] = {1000, 1000, 1000};
@@ -198,7 +204,7 @@ int main() {
     bool has_second_monitor = monitors.size() > 1;
     
     // Create control window on primary monitor
-    GLFWwindow* control_window = glfwCreateWindow(1000, 800, "Spotlight Controls", nullptr, nullptr);
+    GLFWwindow* control_window = glfwCreateWindow(1000, 1000, "Spotlight Controls", nullptr, nullptr);
     if (!control_window) {
         std::cerr << "Failed to create control window\n";
         glfwTerminate();
@@ -458,6 +464,51 @@ int main() {
             }
             ImGui::End();
 
+            ImGui::Begin("Door Control");
+            // let user pick device that is connected to the door
+            if (ImGui::Button("Scan Ports")) {
+                door_port_list = SerialPort::list_available_ports();
+                selected_door_port = -1;
+            }
+            for (int i = 0; i < door_port_list.size(); i++) {
+                if (ImGui::RadioButton(door_port_list[i].c_str(), selected_door_port == i)) {
+                    selected_door_port = i;
+                }
+            }
+
+            if (selected_door_port >= 0 && !serial_door.is_open()) {
+                if (ImGui::Button("Open Door Port")) {
+                    serial_door.open(door_port_list[selected_door_port]);
+                }
+            }
+
+            if (serial_door.is_open()) {
+                ImGui::Text("Door Port Open");
+                if (ImGui::Button("Close Door Port")) {
+                    serial_door.close();
+                }
+            } else {
+                ImGui::TextColored(ImVec4(1, 0, 0, 1), "Door port not open");
+            }
+
+            if (serial_door.is_open()) {
+                if (ImGui::Button("Open Door")) {
+                    serial_door.send_door_command(true);
+                } ImGui::SameLine();
+                if (ImGui::Button("Close Door")) {
+                    serial_door.send_door_command(false);
+                }
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::SliderInt("Object Limit", &object_limit, 1, 10);
+
+            ImGui::End();
+
+
             ImGui::Begin("Spotlight Controls");
             
             if (!has_second_monitor) {
@@ -591,15 +642,25 @@ int main() {
             {
                 std::lock_guard<std::mutex> lock(box_mutex);
                 boxes = latest_boxes;
+             }
+            
+            if (boxes.size() != prev_count && boxes.size() >= object_limit && serial_door.is_open()) {
+                std::cout << "Sending door command to close door" << std::endl;
+                serial_door.send_door_command(false);
+            } else if (boxes.size() != prev_count && boxes.size() < object_limit && serial_door.is_open()) {
+                std::cout << "Sending door command to open door" << std::endl;
+                serial_door.send_door_command(true);
             }
 
+            prev_count = boxes.size();
+            
             float xcenter, ycenter;
             for (const auto& obj : boxes) {
-                xcenter = obj.rect.x + obj.rect.width * 4 / 5.0f;
-                ycenter = obj.rect.y - obj.rect.height * 1 / 5.0f;
-                float cx = (xcenter - 1107) / 1020 * height + (width - height) / 2;
+                xcenter = obj.rect.x + obj.rect.width / 2.0f;
+                ycenter = obj.rect.y - obj.rect.height / 2.0f;
+                float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
                 cx = width - cx; // reflect so projection shows up correctly
-                float cy = (ycenter - 543) / 1020 * height;
+                float cy = (ycenter - 465) / 1172 * height;
                 float radius = circle_radius * height;
                 
                 if (collision_enabled) {

@@ -178,6 +178,13 @@ std::vector<std::string> SerialPort::list_available_ports() {
     return ports;
 }
 
+void SerialPort::send_door_command(bool open) {
+    if (!is_open()) return;
+
+    std::string command = open ? "o\n" : "c\n";
+    write(command);
+}
+
 void SerialPort::send_pump_command(char pump, bool push, int cycles, int delay_us) {
     if (!is_open()) return;
 

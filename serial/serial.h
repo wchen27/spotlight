@@ -53,6 +53,8 @@ class SerialPort {
 
         void send_pump_command(char pump, bool push, float ul, int dispense_time_ms);
 
+        void send_door_command(bool open);
+
     private:
         int fd_;
 };
