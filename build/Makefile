@@ -129,6 +129,54 @@ spotlight/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/build
 .PHONY : spotlight/fast
 
+door_controls.o: door_controls.cpp.o
+.PHONY : door_controls.o
+
+# target to build an object file
+door_controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/door_controls.cpp.o
+.PHONY : door_controls.cpp.o
+
+door_controls.i: door_controls.cpp.i
+.PHONY : door_controls.i
+
+# target to preprocess a source file
+door_controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/door_controls.cpp.i
+.PHONY : door_controls.cpp.i
+
+door_controls.s: door_controls.cpp.s
+.PHONY : door_controls.s
+
+# target to generate assembly for a file
+door_controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/door_controls.cpp.s
+.PHONY : door_controls.cpp.s
+
+pump_controls.o: pump_controls.cpp.o
+.PHONY : pump_controls.o
+
+# target to build an object file
+pump_controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/pump_controls.cpp.o
+.PHONY : pump_controls.cpp.o
+
+pump_controls.i: pump_controls.cpp.i
+.PHONY : pump_controls.i
+
+# target to preprocess a source file
+pump_controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/pump_controls.cpp.i
+.PHONY : pump_controls.cpp.i
+
+pump_controls.s: pump_controls.cpp.s
+.PHONY : pump_controls.s
+
+# target to generate assembly for a file
+pump_controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/pump_controls.cpp.s
+.PHONY : pump_controls.cpp.s
+
 serial/serial.o: serial/serial.cpp.o
 .PHONY : serial/serial.o
 
@@ -176,6 +224,30 @@ spotlight.s: spotlight.cpp.s
 spotlight.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/spotlight.cpp.s
 .PHONY : spotlight.cpp.s
+
+spotlight_controls.o: spotlight_controls.cpp.o
+.PHONY : spotlight_controls.o
+
+# target to build an object file
+spotlight_controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/spotlight_controls.cpp.o
+.PHONY : spotlight_controls.cpp.o
+
+spotlight_controls.i: spotlight_controls.cpp.i
+.PHONY : spotlight_controls.i
+
+# target to preprocess a source file
+spotlight_controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/spotlight_controls.cpp.i
+.PHONY : spotlight_controls.cpp.i
+
+spotlight_controls.s: spotlight_controls.cpp.s
+.PHONY : spotlight_controls.s
+
+# target to generate assembly for a file
+spotlight_controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/spotlight_controls.cpp.s
+.PHONY : spotlight_controls.cpp.s
 
 third_party/imgui/backends/imgui_impl_glfw.o: third_party/imgui/backends/imgui_impl_glfw.cpp.o
 .PHONY : third_party/imgui/backends/imgui_impl_glfw.o
@@ -354,12 +426,21 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... spotlight"
+	@echo "... door_controls.o"
+	@echo "... door_controls.i"
+	@echo "... door_controls.s"
+	@echo "... pump_controls.o"
+	@echo "... pump_controls.i"
+	@echo "... pump_controls.s"
 	@echo "... serial/serial.o"
 	@echo "... serial/serial.i"
 	@echo "... serial/serial.s"
 	@echo "... spotlight.o"
 	@echo "... spotlight.i"
 	@echo "... spotlight.s"
+	@echo "... spotlight_controls.o"
+	@echo "... spotlight_controls.i"
+	@echo "... spotlight_controls.s"
 	@echo "... third_party/imgui/backends/imgui_impl_glfw.o"
 	@echo "... third_party/imgui/backends/imgui_impl_glfw.i"
 	@echo "... third_party/imgui/backends/imgui_impl_glfw.s"

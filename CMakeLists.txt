@@ -34,7 +34,7 @@ set(IMGUI_SOURCES
 )
 
 # Main executable
-add_executable(spotlight spotlight.cpp ${IMGUI_SOURCES})
+add_executable(spotlight spotlight.cpp pump_controls.cpp door_controls.cpp spotlight_controls.cpp ${IMGUI_SOURCES})
 
 target_link_libraries(spotlight
     ${GLFW_LIBRARIES}

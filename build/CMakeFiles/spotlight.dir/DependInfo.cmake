@@ -8,8 +8,11 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/user/src/spotlight/door_controls.cpp" "CMakeFiles/spotlight.dir/door_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/door_controls.cpp.o.d"
+  "/home/user/src/spotlight/pump_controls.cpp" "CMakeFiles/spotlight.dir/pump_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/pump_controls.cpp.o.d"
   "/home/user/src/spotlight/serial/serial.cpp" "CMakeFiles/spotlight.dir/serial/serial.cpp.o" "gcc" "CMakeFiles/spotlight.dir/serial/serial.cpp.o.d"
   "/home/user/src/spotlight/spotlight.cpp" "CMakeFiles/spotlight.dir/spotlight.cpp.o" "gcc" "CMakeFiles/spotlight.dir/spotlight.cpp.o.d"
+  "/home/user/src/spotlight/spotlight_controls.cpp" "CMakeFiles/spotlight.dir/spotlight_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/spotlight_controls.cpp.o.d"
   "/home/user/src/spotlight/third_party/imgui/backends/imgui_impl_glfw.cpp" "CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o" "gcc" "CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o.d"
   "/home/user/src/spotlight/third_party/imgui/backends/imgui_impl_opengl3.cpp" "CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o" "gcc" "CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o.d"
   "/home/user/src/spotlight/third_party/imgui/imgui.cpp" "CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o" "gcc" "CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o.d"

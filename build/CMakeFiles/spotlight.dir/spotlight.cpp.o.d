@@ -242,4 +242,7 @@ CMakeFiles/spotlight.dir/spotlight.cpp.o: \
  /usr/include/c++/11/bits/refwrap.h /usr/include/c++/11/bits/unique_ptr.h \
  /usr/include/c++/11/bits/this_thread_sleep.h /usr/include/c++/11/mutex \
  /usr/include/c++/11/bits/std_mutex.h \
- /usr/include/c++/11/bits/unique_lock.h
+ /usr/include/c++/11/bits/unique_lock.h \
+ /home/user/src/spotlight/pump_controls.h \
+ /home/user/src/spotlight/door_controls.h \
+ /home/user/src/spotlight/spotlight_controls.h

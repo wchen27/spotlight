@@ -13,83 +13,9 @@
 #include <atomic>
 #include <chrono>
 
-// serial settings
-static SerialPort serial;
-static std::vector<std::string> port_list;
-static int selected_port = -1;
-static char send_buffer[128] = "";
-static std::string recv_data;
-
-static SerialPort serial_door;
-static int selected_door_port = -1;
-static std::vector<std::string> door_port_list;
-static int object_limit = 3;
-static int prev_count = -1;
-
-// pump control settings
-const char pump_ids[] = { 'x', 'y', 'z' };
-static int cycles[3] = {1000, 1000, 1000};
-static int delays[3] = {50, 50, 50};
-static int push_directions[3] = {1, 1, 1};
-static int control_mode[3] = {0, 0, 0};
-static float microliters[3] = {2.0f, 2.0f, 2.0f};
-static int delivery_ms[3] = {100, 100, 100};
-static bool repeat[3] = {false, false, false};
-static bool randomize[3] = {false, false, false};
-static int repeat_delay[3] = {10, 10, 10};
-static int random_min_delay[3] = {5, 5, 5};
-static int random_max_delay[3] = {100, 100, 100};
-static double last_sent_time[3] = {0.0, 0.0, 0.0};
-static bool curr_running[3] = {false, false, false};
-
-// object circle settings
-static ImVec2 circle_center = ImVec2(0.5f, 0.5f); // Relative to window size
-static float circle_radius = 0.12f; // Relative to window size
-static ImVec4 circle_color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f); // RGBA
-static ImVec4 alternate_circle_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-static int circle_segments = 12; // Number of segments for the circle
-static float inner_radius = 0.75;
-static bool randomize_rotation_direction = true;
-static int rotation_direction = 1;
-static float theta_rotation = 0.0f; // Rotation angle in radians
-static bool random_rotation = true; // Random rotation for each circle
-static float min_rotation = 6.0f;
-static float max_rotation = 12.0f; 
-static float min_rotation_time = 0.5f;
-static float max_rotation_time = 5.0f;
-static float rotation_time = 1.0f; // Time to rotate the circle
-static bool randomize_rotation_time = true;
-static bool randomize_rotation_delay = true;
-static float rotation_delay = 0.0f; // Delay before starting the rotation
-static float min_rotation_delay = 0.0f;
-static float max_rotation_delay = 5.0f;
-static bool rotation_running = false; // Flag to indicate if rotation is running
-static double rotation_start_time = -1.0; // Start time for rotation
-static float target_theta = 0.0f;
-static float start_theta = 0.0f;
-static float actual_rotation_time = 1.0f;
-static float actual_rotation_delay = 0.0f;
-static bool in_rotation_phase = false;
-static bool in_delay_phase = false;
-
-static bool use_second_monitor = true;
-
-static ImVec2 central_circle_center = ImVec2(0.5f, 0.5f); // In normalized coordinates
-static float central_circle_radius = 0.1f;
-static ImVec4 central_circle_color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
-static ImVec4 alternate_central_circle_color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
-static int central_circle_segments = 64; // Number of segments for the central circle
-static float drift_speed = 0.1f;
-
-static float dynamic_circle_radius = 0.0f; // Radius that increases over time
-static float dynamic_circle_max_duration = 3.0f;  // in seconds
-static float dynamic_circle_max_radius = 0.2f; // Maximum radius for the dynamic circle
-static float dynamic_circle_linger_duration = 1.0f; // Duration to linger at max radius
-static double dynamic_circle_start_time = -1.0;  
-
-static bool collision_enabled = true;
-static bool calibrating = false;
-static bool dynamic_circle = false;
+#include "pump_controls.h"
+#include "door_controls.h"
+#include "spotlight_controls.h"
 
 // Function to get monitor information
 std::vector<GLFWmonitor*> get_monitors() {
@@ -163,7 +89,7 @@ void draw_filled_circle(float cx, float cy, float r, ImVec4 color1, ImVec4 color
 }
 
 void draw_filled_ring(float cx, float cy, float r_inner, float r_outer,
-                      ImVec4 color1, ImVec4 color2, int segments = 64) {
+                      ImVec4 color1, ImVec4 color2, int segments, float theta_rotation) {
     float angle_step = 2.0f * 3.1415926f / segments;
 
     glBegin(GL_TRIANGLE_STRIP);
@@ -224,7 +150,7 @@ int main() {
 
     // Create spotlight window on second monitor if available
     GLFWwindow* spotlight_window = nullptr;
-    if (has_second_monitor && use_second_monitor) {
+    if (has_second_monitor && GetUseSecondMonitor()) {
         spotlight_window = create_borderless_window(monitors[1], control_window);
         if (!spotlight_window) {
             std::cerr << "Failed to create spotlight window\n";
@@ -270,334 +196,9 @@ int main() {
 
         // Control window UI
         {
-            if (ImGui::Begin("Serial Control")) {
-                // window for serial communication functions
-                
-                static std::vector<std::string> config_files = list_json_files_in_folder();
-                static int selected_config_index = 0;
-                static std::string current_config_file = config_files.empty() ? "" : config_files[0];
-    
-                std::size_t pos = current_config_file.find_last_of("/\\");
-                std::string current_filename = (pos == std::string::npos) ? current_config_file 
-                                                    : current_config_file.substr(pos + 1);
-                
-                if (ImGui::Button("Scan Ports")) {
-                    port_list = SerialPort::list_available_ports();
-                    selected_port = -1;
-                }
-    
-                for (int i = 0; i < port_list.size(); i++) {
-                    if (ImGui::RadioButton(port_list[i].c_str(), selected_port == i)) {
-                        selected_port = i;
-                    }
-                }
-    
-                if (!serial.is_open() && selected_port >= 0) {
-                    if (ImGui::Button("Open Port")) {
-                        serial.open(port_list[selected_port]);
-                        const auto& configs = get_loaded_pump_configs(config_files[0]);
-                        initialize_pump_state_from_config(configs, pump_ids, microliters, delivery_ms, cycles, delays, push_directions, control_mode, repeat, repeat_delay);  
-                    }
-                } else if (serial.is_open()) {
-                    ImGui::Text("Port Open");
-                    if (ImGui::Button("Close Port")) {
-                        serial.close();
-                    }
-                }
-    
-                for (int i = 0; i < 3; ++i) {
-                    ImGui::PushID(i);  // Make widgets unique
-            
-                    std::string label = std::string("Pump ") + (char)toupper(pump_ids[i]);
-                    ImGui::Text("%s", label.c_str());
-            
-                    ImGui::RadioButton("Push", &push_directions[i], 1); ImGui::SameLine();
-                    ImGui::RadioButton("Pull", &push_directions[i], 0);
-            
-                    ImGui::RadioButton("µL", &control_mode[i], 0); ImGui::SameLine();
-                    ImGui::RadioButton("Cycles/Delay", &control_mode[i], 1);
-    
-                    // µL or Cycles/Delay inputs
-                    if (control_mode[i] == 0) {
-                        ImGui::SliderFloat("Target µL", &microliters[i], 1.0f, 20.0f, "%.1f");
-                        ImGui::SliderInt("Delivery Time", &delivery_ms[i], 10, 1000);
-                    } else {
-                        ImGui::SliderInt("Cycles", &cycles[i], 100, 30000);
-                        ImGui::SliderInt("Delay", &delays[i], 10, 100);
-                    }
-            
-                    if (serial.is_open()) {
-                        if (curr_running[i]) {
-                            if (ImGui::Button("Stop Command")) {
-                                curr_running[i] = false;
-                                last_sent_time[i] = 0.0;
-                            } ImGui::SameLine();
-                            
-                        } else {
-                            if (ImGui::Button("Send Command")) {
-                                if (repeat[i]) {
-                                    curr_running[i] = true;
-                                } else {
-                                    bool is_push = (push_directions[i] == 1);
-                                    if (control_mode[i] == 0) {
-                                        serial.send_pump_command(pump_ids[i], is_push, microliters[i], delivery_ms[i]);
-                                    }
-                                    else {
-                                        serial.send_pump_command(pump_ids[i], is_push, cycles[i], delays[i]);
-                                    }
-                                }
-                                std::time_t dispense_time = std::time(nullptr);
-                                char ts[64];
-                                std::strftime(ts, sizeof(ts), "[%Y-%m-%d %H:%M:%S] ", std::localtime(&dispense_time));
-                                std::cout << ts << "Dispensing pump " << pump_ids[i] << std::endl;
-                                dynamic_circle_start_time = ImGui::GetTime();
-                                dynamic_circle_radius = 0.00f;
-                            } ImGui::SameLine();
-                        }
-                        
-    
-                        ImGui::Checkbox("Repeat", &repeat[i]); 
-                        ImGui::SameLine();
-                        ImGui::Checkbox("Randomize", &randomize[i]);
-                        if (repeat[i] && !randomize[i]) {
-                            ImGui::SliderInt("Interval", &repeat_delay[i], 5, 5000); // TODO: change
-                        }
-                        if (repeat[i] && randomize[i]) {
-                            // two sliders for min and max delay
-                            ImGui::SliderInt("Min Delay", &random_min_delay[i], 5, 6000);
-                            ImGui::SliderInt("Max Delay", &random_max_delay[i], 5, 6000);
-                        }
-    
-                        double now = ImGui::GetTime();
-                        
-                        if (repeat[i] && (now - last_sent_time[i] >= repeat_delay[i]) && curr_running[i]) {
-                            bool is_push = (push_directions[i] == 1);
-                            if (control_mode[i] == 0) {
-                                serial.send_pump_command(pump_ids[i], is_push, microliters[i], delivery_ms[i]);
-                            }
-                            else {
-                                serial.send_pump_command(pump_ids[i], is_push, cycles[i], delays[i]);
-                            }
-                            if (randomize[i]) {
-                                // Randomize the repeat delay
-                                repeat_delay[i] = random_min_delay[i] + (rand() % (random_max_delay[i] - random_min_delay[i] + 1));
-                            }
-                            last_sent_time[i] = now;
-                            std::time_t dispense_time = std::time(nullptr);
-                            char ts[64];
-                            std::strftime(ts, sizeof(ts), "[%Y-%m-%d %H:%M:%S] ", std::localtime(&dispense_time));
-                            std::cout << ts << "Dispensing pump " << pump_ids[i] << std::endl;
-                            dynamic_circle_start_time = ImGui::GetTime();
-                            dynamic_circle_radius = 0.00f;
-                            
-                        }
-                    }
-            
-                    ImGui::Separator();
-                    ImGui::PopID();
-                }
-    
-                if (serial.is_open()) {
-                    if (ImGui::Button("Send All Commands")) {
-                        for (int i = 0; i < 3; ++i) {
-                            if (repeat[i]) {
-                                curr_running[i] = true;
-                            } else {
-                                bool is_push = (push_directions[i] == 1);
-                                if (control_mode[i] == 0) {
-                                    serial.send_pump_command(pump_ids[i], is_push, microliters[i], delivery_ms[i]);
-                                }
-                                else {
-                                    serial.send_pump_command(pump_ids[i], is_push, cycles[i], delays[i]);
-                                }
-                            }
-                            std::time_t dispense_time = std::time(nullptr);
-                            char ts[64];
-                            std::strftime(ts, sizeof(ts), "[%Y-%m-%d %H:%M:%S] ", std::localtime(&dispense_time));
-                            std::cout << ts << "Dispensing pump " << pump_ids[i] << std::endl;
-                        }
-                    } ImGui::SameLine();
-                    if (ImGui::Button("Stop All Commands")) {
-                        for (int i = 0; i < 3; ++i) {
-                            curr_running[i] = false;
-                            last_sent_time[i] = 0.0;
-                        }
-                    }
-                } else {
-                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "Serial port not open");
-                }
-    
-                
-    
-                if (ImGui::BeginCombo("Select Config", current_filename.c_str())) {
-                    for (int i = 0; i < config_files.size(); ++i) {
-                        std::string full_path = config_files[i];
-                        std::size_t pos = full_path.find_last_of("/\\");
-                        std::string filename = (pos == std::string::npos) ? full_path : full_path.substr(pos + 1);
-                        bool is_selected = (selected_config_index == i);
-                        if (ImGui::Selectable(filename.c_str(), is_selected)) {
-                            selected_config_index = i;
-                            current_config_file = config_files[i];
-                
-                            if (load_pump_config(current_config_file, cfg)) {
-                                const auto& configs = get_loaded_pump_configs(current_config_file);
-                            
-                                initialize_pump_state_from_config(configs, pump_ids, microliters, delivery_ms, cycles, delays, push_directions, control_mode, repeat, repeat_delay);      
-                            }
-                        }
-                        if (is_selected) ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-    
-                if (ImGui::Button("Reload Config")) {
-                    config_files = list_json_files_in_folder();  // refresh file list
-                    if (!config_files.empty() && selected_config_index < config_files.size()) {
-                        current_config_file = config_files[selected_config_index];
-                        if (load_pump_config(current_config_file, cfg)) {
-                            const auto& configs = get_loaded_pump_configs(current_config_file);
-                
-                            initialize_pump_state_from_config(configs, pump_ids, microliters, delivery_ms, cycles, delays, push_directions, control_mode, repeat, repeat_delay);    
-                        }
-                    }
-                }
-            }
-            ImGui::End();
-
-            ImGui::Begin("Door Control");
-            // let user pick device that is connected to the door
-            if (ImGui::Button("Scan Ports")) {
-                door_port_list = SerialPort::list_available_ports();
-                selected_door_port = -1;
-            }
-            for (int i = 0; i < door_port_list.size(); i++) {
-                if (ImGui::RadioButton(door_port_list[i].c_str(), selected_door_port == i)) {
-                    selected_door_port = i;
-                }
-            }
-
-            if (selected_door_port >= 0 && !serial_door.is_open()) {
-                if (ImGui::Button("Open Door Port")) {
-                    serial_door.open(door_port_list[selected_door_port]);
-                }
-            }
-
-            if (serial_door.is_open()) {
-                ImGui::Text("Door Port Open");
-                if (ImGui::Button("Close Door Port")) {
-                    serial_door.close();
-                }
-            } else {
-                ImGui::TextColored(ImVec4(1, 0, 0, 1), "Door port not open");
-            }
-
-            if (serial_door.is_open()) {
-                if (ImGui::Button("Open Door")) {
-                    serial_door.send_door_command(true);
-                } ImGui::SameLine();
-                if (ImGui::Button("Close Door")) {
-                    serial_door.send_door_command(false);
-                }
-            }
-
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            ImGui::SliderInt("Object Limit", &object_limit, 1, 10);
-
-            ImGui::End();
-
-
-            ImGui::Begin("Spotlight Controls");
-            
-            if (!has_second_monitor) {
-                ImGui::TextColored(ImVec4(1, 0, 0, 1), "No second monitor detected!");
-            } else {
-                ImGui::Checkbox("Use Second Monitor", &use_second_monitor);
-                
-                // ImGui::SliderFloat2("Circle Center", (float*)&circle_center, 0.0f, 1.0f);
-                ImGui::SliderFloat("Circle Radius", &circle_radius, 0.01f, 0.5f);
-                ImGui::SliderFloat("Inner Circle Radius", &inner_radius, 0.01f, 1.0f);
-                ImGui::ColorEdit4("Circle Color", (float*)&circle_color);
-                ImGui::Checkbox("Random Rotation", &random_rotation);
-                ImGui::Checkbox("Randomize Rotation Time", &randomize_rotation_time);
-                ImGui::Checkbox("Randomize Rotation Delay", &randomize_rotation_delay);
-                
-                if (random_rotation) {
-                    ImGui::SliderFloat("Min Rotation (magnitude)", &min_rotation, 0.0f, 60.0f);
-                    ImGui::SliderFloat("Max Rotation (magnitude)", &max_rotation, 0.0f, 60.0f);
-                    ImGui::SliderFloat("Min Rotation Time", &min_rotation_time, 0.0f, 10.0f);
-                    ImGui::SliderFloat("Max Rotation Time", &max_rotation_time, 0.0f, 10.0f);
-                    
-                    ImGui::Checkbox("Randomize Direction", &randomize_rotation_direction);
-                    if (!randomize_rotation_direction) {
-                        ImGui::RadioButton("CW", &rotation_direction, 1); ImGui::SameLine();
-                        ImGui::RadioButton("CCW", &rotation_direction, -1);
-                    }
-
-                    if (randomize_rotation_delay) {
-                        ImGui::SliderFloat("Min Rotation Delay", &min_rotation_delay, 0.0f, 10.0f);
-                        ImGui::SliderFloat("Max Rotation Delay", &max_rotation_delay, 0.0f, 10.0f);
-                    } else {
-                        ImGui::SliderFloat("Rotation Delay", &rotation_delay, 0.0f, 10.0f);
-                    }
-                } else {
-                    ImGui::SliderFloat("Theta Rotation", &theta_rotation, 0.0f, 6.28319f); // 2 * PI
-                }
-
-                if (rotation_running) {
-                    if (ImGui::Button("Stop Rotation")) {
-                        rotation_running = false;
-                        in_rotation_phase = false;
-                        in_delay_phase = false;
-                    } 
-                } else {
-                    if (ImGui::Button("Start Rotation")) {
-                        rotation_running = true;
-                        rotation_start_time = ImGui::GetTime();
-                    } 
-                }
-                ImGui::ColorEdit4("Alternate Circle Color", (float*)&alternate_circle_color);
-                ImGui::SliderInt("Circle Segments", &circle_segments, 3, 128);
-            }
-            
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-            
-            ImGui::SliderFloat("Central Circle Radius", &central_circle_radius, 0.01f, 1.0f);
-            ImGui::ColorEdit4("Central Circle Color", (float*)&central_circle_color);
-            ImGui::SliderInt("Central Circle Segments", &central_circle_segments, 3, 128);
-            if (ImGui::Button("Reset Central Position")) {
-                central_circle_center = ImVec2(0.5f, 0.5f); // Recenter
-            }
-
-            ImGui::SliderFloat("Drift Speed", &drift_speed, 0.005f, 0.2f);
-
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            ImGui::SliderFloat("Dynamic Circle Duration", &dynamic_circle_max_duration, 0.5f, 10.0f, "%.1f s");
-            ImGui::SliderFloat("Dynamic Circle Max Radius", &dynamic_circle_max_radius, 0.01f, 0.5f, "%.2f");
-            ImGui::SliderFloat("Dynamic Circle Linger Duration", &dynamic_circle_linger_duration, 1.0f, 60.0f, "%.1f s");
-            if (ImGui::Checkbox("Dynamic Circle", &dynamic_circle)) {
-                if (dynamic_circle) {
-                    dynamic_circle_start_time = -999;  // Start timer
-                    dynamic_circle_radius = 0.00f; // Reset initial radius
-                }
-            }
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-            ImGui::Checkbox("Collision Enabled", &collision_enabled);
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            ImGui::Checkbox("Calibration Mode", &calibrating);
-            ImGui::End();
+            RenderPumpControls();
+            RenderDoorControls();
+            RenderSpotlightControls(has_second_monitor);
         }
 
         // Render control window
@@ -614,7 +215,7 @@ int main() {
         uint64_t spotlight_timestamp = get_time_us();
 
         // Render spotlight window if available
-        if (has_second_monitor && use_second_monitor && spotlight_window && !glfwWindowShouldClose(spotlight_window)) {
+        if (has_second_monitor && GetUseSecondMonitor() && spotlight_window && !glfwWindowShouldClose(spotlight_window)) {
             glfwMakeContextCurrent(spotlight_window);
 
             int width, height;
@@ -631,10 +232,10 @@ int main() {
 
             // Actual central circle position in pixels
             ImVec2 central_pixel_pos = ImVec2(
-                central_circle_center.x * width,
-                central_circle_center.y * height
+                RefCentralCircleCenter().x * width,
+                RefCentralCircleCenter().y * height
             );
-            float central_pixel_radius = central_circle_radius * std::min(width, height);
+            float central_pixel_radius = GetCentralCircleRadius() * std::min(width, height);
 
             // Accumulated push vector
             ImVec2 total_push = ImVec2(0, 0);
@@ -644,15 +245,14 @@ int main() {
                 boxes = latest_boxes;
              }
             
-            if (boxes.size() != prev_count && boxes.size() >= object_limit && serial_door.is_open()) {
+            if (boxes.size() != RefPrevCount() && boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to close door" << std::endl;
-                serial_door.send_door_command(false);
-            } else if (boxes.size() != prev_count && boxes.size() < object_limit && serial_door.is_open()) {
+                SendDoorCommand(false);
+            } else if (boxes.size() != RefPrevCount() && boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to open door" << std::endl;
-                serial_door.send_door_command(true);
+                SendDoorCommand(true);
             }
-
-            prev_count = boxes.size();
+            RefPrevCount() = boxes.size();
             
             float xcenter, ycenter;
             for (const auto& obj : boxes) {
@@ -661,9 +261,8 @@ int main() {
                 float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
                 cx = width - cx; // reflect so projection shows up correctly
                 float cy = (ycenter - 465) / 1172 * height;
-                float radius = circle_radius * height;
-                
-                if (collision_enabled) {
+                float radius = GetCircleRadius() * height;
+                if (GetCollisionEnabled()) {
                     // Calculate vector between centers
                     float dx = central_pixel_pos.x - cx;
                     float dy = central_pixel_pos.y - cy;
@@ -679,7 +278,7 @@ int main() {
 
                 }
                 
-                draw_filled_ring(cx, cy, radius, radius * inner_radius, circle_color, alternate_circle_color, circle_segments); 
+                draw_filled_ring(cx, cy, radius, radius * GetInnerRadius(), GetCircleColor(), GetAlternateCircleColor(), GetCircleSegments(), RefThetaRotation());
             }
             
 
@@ -696,80 +295,68 @@ int main() {
             const float push_magnitude = std::sqrt(total_push.x * total_push.x + total_push.y * total_push.y);
             if (push_magnitude < 0.05f) {
                 // Drift in normalized space
-                central_circle_center = lerp(central_circle_center, center_normalized, drift_speed); 
-                central_pixel_pos.x = central_circle_center.x * width;
-                central_pixel_pos.y = central_circle_center.y * height;
+                RefCentralCircleCenter() = lerp(RefCentralCircleCenter(), center_normalized, GetDriftSpeed());
+                central_pixel_pos.x = RefCentralCircleCenter().x * width;
+                central_pixel_pos.y = RefCentralCircleCenter().y * height;
             }
 
             // Convert back to normalized coordinates
-            central_circle_center.x = central_pixel_pos.x / width;
-            central_circle_center.y = central_pixel_pos.y / height;
+            RefCentralCircleCenter().x = central_pixel_pos.x / width;
+            RefCentralCircleCenter().y = central_pixel_pos.y / height;
 
-            if (!dynamic_circle) {
-                draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y, central_pixel_radius, central_circle_color, alternate_central_circle_color, central_circle_segments);
+            if (!GetDynamicCircle()) {
+                draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y, central_pixel_radius, GetCentralCircleColor(), GetAlternateCentralCircleColor(), GetCentralCircleSegments());
             } else {
-                double elapsed = ImGui::GetTime() - dynamic_circle_start_time;
-
-                // Only update and draw if within duration
-                if (elapsed <= dynamic_circle_linger_duration + dynamic_circle_max_duration) {
-                    dynamic_circle_radius = std::min(
-                        dynamic_circle_max_radius,
-                        ((float) elapsed / dynamic_circle_max_duration) * dynamic_circle_max_radius
+                double elapsed = ImGui::GetTime() - RefDynamicCircleStartTime();
+                if (elapsed <= GetDynamicCircleLingerDuration() + GetDynamicCircleMaxDuration()) {
+                    RefDynamicCircleRadius() = std::min(
+                        GetDynamicCircleMaxRadius(),
+                        ((float) elapsed / GetDynamicCircleMaxDuration()) * GetDynamicCircleMaxRadius()
                     );
                     draw_filled_circle(central_pixel_pos.x, central_pixel_pos.y,
-                                    dynamic_circle_radius * std::min(width, height),
-                                    central_circle_color, central_circle_segments);
+                                    RefDynamicCircleRadius() * std::min(width, height),
+                                    GetCentralCircleColor(), GetCentralCircleSegments());
                 } else { 
-                    dynamic_circle_radius = 0.0f; // Reset radius
+                    RefDynamicCircleRadius() = 0.0f;
                 }
             }
 
             // rotate circles if enabled
-            if (rotation_running) {
+            if (GetRotationRunning()) {
                 double now = ImGui::GetTime();
-            
-                if (!in_rotation_phase && !in_delay_phase) {
-                    // Initialize a new rotation
-                    start_theta = theta_rotation;
-            
-                    // Randomize target_theta
-                    if (random_rotation) {
-                        float magnitude = min_rotation + static_cast<float>(rand()) / RAND_MAX * (max_rotation - min_rotation);
-                        int dir = randomize_rotation_direction ? (rand() % 2 == 0 ? 1 : -1) : rotation_direction;
-                        target_theta = theta_rotation + dir * magnitude;
+                if (!RefInRotationPhase() && !RefInDelayPhase()) {
+                    RefStartTheta() = RefThetaRotation();
+                    if (GetRandomRotation()) {
+                        float magnitude = GetMinRotation() + static_cast<float>(rand()) / RAND_MAX * (GetMaxRotation() - GetMinRotation());
+                        int dir = GetRandomizeRotationDirection() ? (rand() % 2 == 0 ? 1 : -1) : GetRotationDirection();
+                        RefTargetTheta() = RefThetaRotation() + dir * magnitude;
                     }
-            
-                    // Randomize rotation time
-                    if (randomize_rotation_time) {
-                        actual_rotation_time = min_rotation_time + static_cast<float>(rand()) / RAND_MAX * (max_rotation_time - min_rotation_time);
+                    if (GetRandomizeRotationTime()) {
+                        RefActualRotationTime() = GetMinRotationTime() + static_cast<float>(rand()) / RAND_MAX * (GetMaxRotationTime() - GetMinRotationTime());
                     } else {
-                        actual_rotation_time = rotation_time;
+                        RefActualRotationTime() = GetRotationTime();
                     }
-            
-                    // Randomize delay
-                    if (randomize_rotation_delay) {
-                        actual_rotation_delay = min_rotation_delay + static_cast<float>(rand()) / RAND_MAX * (max_rotation_delay - min_rotation_delay);
+                    if (GetRandomizeRotationDelay()) {
+                        RefActualRotationDelay() = GetMinRotationDelay() + static_cast<float>(rand()) / RAND_MAX * (GetMaxRotationDelay() - GetMinRotationDelay());
                     } else {
-                        actual_rotation_delay = rotation_delay;
+                        RefActualRotationDelay() = GetRotationDelay();
                     }
-            
-                    rotation_start_time = now;
-                    in_rotation_phase = true;
+                    // rotation_start_time = now; (move to module if needed)
+                    RefInRotationPhase() = true;
                 }
-            
-                if (in_rotation_phase) {
-                    float t = static_cast<float>((now - rotation_start_time) / actual_rotation_time);
+                if (RefInRotationPhase()) {
+                    float t = static_cast<float>((now - RefRotationStartTime()) / RefActualRotationTime());
                     if (t >= 1.0f) {
-                        theta_rotation = target_theta;
-                        in_rotation_phase = false;
-                        in_delay_phase = true;
-                        rotation_start_time = now;
+                        RefThetaRotation() = RefTargetTheta();
+                        RefInRotationPhase() = false;
+                        RefInDelayPhase() = true;
+                        // rotation_start_time = now; (move to module if needed)
                     } else {
-                        theta_rotation = start_theta + t * (target_theta - start_theta);
+                        RefThetaRotation() = RefStartTheta() + t * (RefTargetTheta() - RefStartTheta());
                     }
-                } else if (in_delay_phase) {
-                    if ((now - rotation_start_time) >= actual_rotation_delay) {
-                        in_delay_phase = false;
+                } else if (RefInDelayPhase()) {
+                    if ((now - RefRotationStartTime()) >= RefActualRotationDelay()) {
+                        RefInDelayPhase() = false;
                     }
                 }
             }
@@ -777,7 +364,7 @@ int main() {
             // Draw central circle
             
 
-            if (calibrating) {
+            if (RefCalibrating()) {
                 draw_filled_circle(width / 2.0 - height / 2.0, 0, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
                 draw_filled_circle(width / 2.0 + height / 2.0, 0, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
                 draw_filled_circle(width / 2.0 - height / 2.0, height, 20, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
