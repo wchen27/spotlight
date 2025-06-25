@@ -245,4 +245,6 @@ CMakeFiles/spotlight.dir/spotlight.cpp.o: \
  /usr/include/c++/11/bits/unique_lock.h \
  /home/user/src/spotlight/pump_controls.h \
  /home/user/src/spotlight/door_controls.h \
- /home/user/src/spotlight/spotlight_controls.h
+ /home/user/src/spotlight/spotlight_controls.h \
+ /home/user/src/spotlight/grating_controls.h \
+ /home/user/src/spotlight/concentric_circles_controls.h

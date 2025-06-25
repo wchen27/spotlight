@@ -129,6 +129,30 @@ spotlight/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/build
 .PHONY : spotlight/fast
 
+concentric_circles_controls.o: concentric_circles_controls.cpp.o
+.PHONY : concentric_circles_controls.o
+
+# target to build an object file
+concentric_circles_controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o
+.PHONY : concentric_circles_controls.cpp.o
+
+concentric_circles_controls.i: concentric_circles_controls.cpp.i
+.PHONY : concentric_circles_controls.i
+
+# target to preprocess a source file
+concentric_circles_controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.i
+.PHONY : concentric_circles_controls.cpp.i
+
+concentric_circles_controls.s: concentric_circles_controls.cpp.s
+.PHONY : concentric_circles_controls.s
+
+# target to generate assembly for a file
+concentric_circles_controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.s
+.PHONY : concentric_circles_controls.cpp.s
+
 door_controls.o: door_controls.cpp.o
 .PHONY : door_controls.o
 
@@ -152,6 +176,30 @@ door_controls.s: door_controls.cpp.s
 door_controls.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/door_controls.cpp.s
 .PHONY : door_controls.cpp.s
+
+grating_controls.o: grating_controls.cpp.o
+.PHONY : grating_controls.o
+
+# target to build an object file
+grating_controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/grating_controls.cpp.o
+.PHONY : grating_controls.cpp.o
+
+grating_controls.i: grating_controls.cpp.i
+.PHONY : grating_controls.i
+
+# target to preprocess a source file
+grating_controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/grating_controls.cpp.i
+.PHONY : grating_controls.cpp.i
+
+grating_controls.s: grating_controls.cpp.s
+.PHONY : grating_controls.s
+
+# target to generate assembly for a file
+grating_controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/grating_controls.cpp.s
+.PHONY : grating_controls.cpp.s
 
 pump_controls.o: pump_controls.cpp.o
 .PHONY : pump_controls.o
@@ -426,9 +474,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... spotlight"
+	@echo "... concentric_circles_controls.o"
+	@echo "... concentric_circles_controls.i"
+	@echo "... concentric_circles_controls.s"
 	@echo "... door_controls.o"
 	@echo "... door_controls.i"
 	@echo "... door_controls.s"
+	@echo "... grating_controls.o"
+	@echo "... grating_controls.i"
+	@echo "... grating_controls.s"
 	@echo "... pump_controls.o"
 	@echo "... pump_controls.i"
 	@echo "... pump_controls.s"

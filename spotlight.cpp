@@ -16,6 +16,8 @@
 #include "pump_controls.h"
 #include "door_controls.h"
 #include "spotlight_controls.h"
+#include "grating_controls.h"
+#include "concentric_circles_controls.h"
 
 // Function to get monitor information
 std::vector<GLFWmonitor*> get_monitors() {
@@ -71,7 +73,7 @@ void draw_filled_circle(float cx, float cy, float r, ImVec4 color, int segments 
 void draw_filled_circle(float cx, float cy, float r, ImVec4 color1, ImVec4 color2, int segments = 64) {
     // draw filled circle with alternating colors
     glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(cx, cy); 
+    glVertex2f(cx, cy);
     for (int i = 0; i <= segments; ++i) {
         float theta = (2.0f * 3.1415926f * float(i)) / float(segments);
         float x = r * cosf(theta);
@@ -82,7 +84,6 @@ void draw_filled_circle(float cx, float cy, float r, ImVec4 color1, ImVec4 color
         } else {
             glColor4f(color2.x, color2.y, color2.z, color2.w);
         }
-        
         glVertex2f(cx + x, cy + y);
     }
     glEnd();
@@ -199,6 +200,8 @@ int main() {
             RenderPumpControls();
             RenderDoorControls();
             RenderSpotlightControls(has_second_monitor);
+            RenderGratingControls();
+            RenderConcentricRingsControls();
         }
 
         // Render control window
@@ -229,6 +232,10 @@ int main() {
             glOrtho(0, width, height, 0, -1, 1);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
+
+            // Draw gratings FIRST so they appear beneath everything else
+            DrawMovingGratings(width, height, ImGui::GetTime());
+            DrawConcentricRings(width, height, ImGui::GetTime());
 
             // Actual central circle position in pixels
             ImVec2 central_pixel_pos = ImVec2(

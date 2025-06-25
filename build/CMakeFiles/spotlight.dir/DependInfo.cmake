@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/user/src/spotlight/concentric_circles_controls.cpp" "CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o.d"
   "/home/user/src/spotlight/door_controls.cpp" "CMakeFiles/spotlight.dir/door_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/door_controls.cpp.o.d"
+  "/home/user/src/spotlight/grating_controls.cpp" "CMakeFiles/spotlight.dir/grating_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/grating_controls.cpp.o.d"
   "/home/user/src/spotlight/pump_controls.cpp" "CMakeFiles/spotlight.dir/pump_controls.cpp.o" "gcc" "CMakeFiles/spotlight.dir/pump_controls.cpp.o.d"
   "/home/user/src/spotlight/serial/serial.cpp" "CMakeFiles/spotlight.dir/serial/serial.cpp.o" "gcc" "CMakeFiles/spotlight.dir/serial/serial.cpp.o.d"
   "/home/user/src/spotlight/spotlight.cpp" "CMakeFiles/spotlight.dir/spotlight.cpp.o" "gcc" "CMakeFiles/spotlight.dir/spotlight.cpp.o.d"

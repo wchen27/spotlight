@@ -125,10 +125,38 @@ CMakeFiles/spotlight.dir/spotlight_controls.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/spotlight.dir/spotlight_controls.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/src/spotlight/spotlight_controls.cpp -o CMakeFiles/spotlight.dir/spotlight_controls.cpp.s
 
+CMakeFiles/spotlight.dir/grating_controls.cpp.o: CMakeFiles/spotlight.dir/flags.make
+CMakeFiles/spotlight.dir/grating_controls.cpp.o: ../grating_controls.cpp
+CMakeFiles/spotlight.dir/grating_controls.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/spotlight.dir/grating_controls.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/grating_controls.cpp.o -MF CMakeFiles/spotlight.dir/grating_controls.cpp.o.d -o CMakeFiles/spotlight.dir/grating_controls.cpp.o -c /home/user/src/spotlight/grating_controls.cpp
+
+CMakeFiles/spotlight.dir/grating_controls.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/spotlight.dir/grating_controls.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/src/spotlight/grating_controls.cpp > CMakeFiles/spotlight.dir/grating_controls.cpp.i
+
+CMakeFiles/spotlight.dir/grating_controls.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/spotlight.dir/grating_controls.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/src/spotlight/grating_controls.cpp -o CMakeFiles/spotlight.dir/grating_controls.cpp.s
+
+CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o: CMakeFiles/spotlight.dir/flags.make
+CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o: ../concentric_circles_controls.cpp
+CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o -MF CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o.d -o CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o -c /home/user/src/spotlight/concentric_circles_controls.cpp
+
+CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/src/spotlight/concentric_circles_controls.cpp > CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.i
+
+CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/src/spotlight/concentric_circles_controls.cpp -o CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.s
+
 CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o: ../third_party/imgui/imgui.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o -c /home/user/src/spotlight/third_party/imgui/imgui.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.i: cmake_force
@@ -142,7 +170,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.s: cmake_force
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o: ../third_party/imgui/imgui_demo.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o -c /home/user/src/spotlight/third_party/imgui/imgui_demo.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.i: cmake_force
@@ -156,7 +184,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.s: cmake_force
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o: ../third_party/imgui/imgui_draw.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o -c /home/user/src/spotlight/third_party/imgui/imgui_draw.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.i: cmake_force
@@ -170,7 +198,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.s: cmake_force
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o: ../third_party/imgui/imgui_tables.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.o -c /home/user/src/spotlight/third_party/imgui/imgui_tables.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.i: cmake_force
@@ -184,7 +212,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_tables.cpp.s: cmake_force
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/imgui/imgui_widgets.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o -c /home/user/src/spotlight/third_party/imgui/imgui_widgets.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.i: cmake_force
@@ -198,7 +226,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.s: cmake_force
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o: ../third_party/imgui/backends/imgui_impl_glfw.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.o -c /home/user/src/spotlight/third_party/imgui/backends/imgui_impl_glfw.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.i: cmake_force
@@ -212,7 +240,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_glfw.cpp.s: cmake
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o: ../third_party/imgui/backends/imgui_impl_opengl3.cpp
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o -MF CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.o -c /home/user/src/spotlight/third_party/imgui/backends/imgui_impl_opengl3.cpp
 
 CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.i: cmake_force
@@ -226,7 +254,7 @@ CMakeFiles/spotlight.dir/third_party/imgui/backends/imgui_impl_opengl3.cpp.s: cm
 CMakeFiles/spotlight.dir/serial/serial.cpp.o: CMakeFiles/spotlight.dir/flags.make
 CMakeFiles/spotlight.dir/serial/serial.cpp.o: ../serial/serial.cpp
 CMakeFiles/spotlight.dir/serial/serial.cpp.o: CMakeFiles/spotlight.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/spotlight.dir/serial/serial.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/spotlight.dir/serial/serial.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spotlight.dir/serial/serial.cpp.o -MF CMakeFiles/spotlight.dir/serial/serial.cpp.o.d -o CMakeFiles/spotlight.dir/serial/serial.cpp.o -c /home/user/src/spotlight/serial/serial.cpp
 
 CMakeFiles/spotlight.dir/serial/serial.cpp.i: cmake_force
@@ -243,6 +271,8 @@ spotlight_OBJECTS = \
 "CMakeFiles/spotlight.dir/pump_controls.cpp.o" \
 "CMakeFiles/spotlight.dir/door_controls.cpp.o" \
 "CMakeFiles/spotlight.dir/spotlight_controls.cpp.o" \
+"CMakeFiles/spotlight.dir/grating_controls.cpp.o" \
+"CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o" \
 "CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o" \
 "CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o" \
 "CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o" \
@@ -259,6 +289,8 @@ spotlight: CMakeFiles/spotlight.dir/spotlight.cpp.o
 spotlight: CMakeFiles/spotlight.dir/pump_controls.cpp.o
 spotlight: CMakeFiles/spotlight.dir/door_controls.cpp.o
 spotlight: CMakeFiles/spotlight.dir/spotlight_controls.cpp.o
+spotlight: CMakeFiles/spotlight.dir/grating_controls.cpp.o
+spotlight: CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o
 spotlight: CMakeFiles/spotlight.dir/third_party/imgui/imgui.cpp.o
 spotlight: CMakeFiles/spotlight.dir/third_party/imgui/imgui_demo.cpp.o
 spotlight: CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o
@@ -271,7 +303,7 @@ spotlight: CMakeFiles/spotlight.dir/build.make
 spotlight: /usr/lib/x86_64-linux-gnu/libGL.so
 spotlight: /usr/lib/x86_64-linux-gnu/libGLU.so
 spotlight: CMakeFiles/spotlight.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable spotlight"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/src/spotlight/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable spotlight"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/spotlight.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

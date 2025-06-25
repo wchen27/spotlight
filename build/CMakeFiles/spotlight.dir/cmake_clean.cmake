@@ -1,6 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o"
+  "CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o.d"
   "CMakeFiles/spotlight.dir/door_controls.cpp.o"
   "CMakeFiles/spotlight.dir/door_controls.cpp.o.d"
+  "CMakeFiles/spotlight.dir/grating_controls.cpp.o"
+  "CMakeFiles/spotlight.dir/grating_controls.cpp.o.d"
   "CMakeFiles/spotlight.dir/pump_controls.cpp.o"
   "CMakeFiles/spotlight.dir/pump_controls.cpp.o.d"
   "CMakeFiles/spotlight.dir/serial/serial.cpp.o"
