@@ -142,7 +142,8 @@ CMakeFiles/spotlight.dir/pump_controls.cpp.o: \
  /home/user/src/spotlight/third_party/imgui/imgui.h \
  /home/user/src/spotlight/third_party/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h /usr/include/string.h \
- /usr/include/strings.h /usr/include/assert.h /usr/include/c++/11/ctime \
+ /usr/include/strings.h /usr/include/assert.h \
+ /home/user/src/spotlight/spotlight_controls.h /usr/include/c++/11/ctime \
  /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
  /usr/include/c++/11/ios /usr/include/c++/11/exception \
  /usr/include/c++/11/bits/exception_ptr.h \
