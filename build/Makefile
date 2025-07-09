@@ -225,6 +225,30 @@ pump_controls.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/pump_controls.cpp.s
 .PHONY : pump_controls.cpp.s
 
+salesman_experiment.o: salesman_experiment.cpp.o
+.PHONY : salesman_experiment.o
+
+# target to build an object file
+salesman_experiment.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/salesman_experiment.cpp.o
+.PHONY : salesman_experiment.cpp.o
+
+salesman_experiment.i: salesman_experiment.cpp.i
+.PHONY : salesman_experiment.i
+
+# target to preprocess a source file
+salesman_experiment.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/salesman_experiment.cpp.i
+.PHONY : salesman_experiment.cpp.i
+
+salesman_experiment.s: salesman_experiment.cpp.s
+.PHONY : salesman_experiment.s
+
+# target to generate assembly for a file
+salesman_experiment.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spotlight.dir/build.make CMakeFiles/spotlight.dir/salesman_experiment.cpp.s
+.PHONY : salesman_experiment.cpp.s
+
 serial/serial.o: serial/serial.cpp.o
 .PHONY : serial/serial.o
 
@@ -486,6 +510,9 @@ help:
 	@echo "... pump_controls.o"
 	@echo "... pump_controls.i"
 	@echo "... pump_controls.s"
+	@echo "... salesman_experiment.o"
+	@echo "... salesman_experiment.i"
+	@echo "... salesman_experiment.s"
 	@echo "... serial/serial.o"
 	@echo "... serial/serial.i"
 	@echo "... serial/serial.s"

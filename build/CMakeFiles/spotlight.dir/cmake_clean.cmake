@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/spotlight.dir/grating_controls.cpp.o.d"
   "CMakeFiles/spotlight.dir/pump_controls.cpp.o"
   "CMakeFiles/spotlight.dir/pump_controls.cpp.o.d"
+  "CMakeFiles/spotlight.dir/salesman_experiment.cpp.o"
+  "CMakeFiles/spotlight.dir/salesman_experiment.cpp.o.d"
   "CMakeFiles/spotlight.dir/serial/serial.cpp.o"
   "CMakeFiles/spotlight.dir/serial/serial.cpp.o.d"
   "CMakeFiles/spotlight.dir/spotlight.cpp.o"

@@ -225,3 +225,14 @@ void RenderPumpControls() {
     }
     ImGui::End();
 }
+
+SerialPort& get_serial() { return serial; }
+const char* get_pump_ids() { return pump_ids; }
+
+// Accessors for current pump settings
+float get_pump_microliters(int idx) { return microliters[idx]; }
+int get_pump_delivery_ms(int idx) { return delivery_ms[idx]; }
+int get_pump_cycles(int idx) { return cycles[idx]; }
+int get_pump_delays(int idx) { return delays[idx]; }
+bool get_pump_is_push(int idx) { return push_directions[idx] == 1; }
+int get_pump_control_mode(int idx) { return control_mode[idx]; }

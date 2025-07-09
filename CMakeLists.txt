@@ -36,6 +36,17 @@ set(IMGUI_SOURCES
 # Main executable
 add_executable(spotlight spotlight.cpp pump_controls.cpp door_controls.cpp spotlight_controls.cpp grating_controls.cpp concentric_circles_controls.cpp ${IMGUI_SOURCES})
 
+target_sources(spotlight
+        PRIVATE
+            spotlight.cpp
+            pump_controls.cpp
+            door_controls.cpp
+            spotlight_controls.cpp
+            grating_controls.cpp
+            concentric_circles_controls.cpp
+            salesman_experiment.cpp
+    )
+
 target_link_libraries(spotlight
     ${GLFW_LIBRARIES}
     ${GLEW_LIBRARIES}

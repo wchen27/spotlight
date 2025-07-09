@@ -18,6 +18,7 @@
 #include "spotlight_controls.h"
 #include "grating_controls.h"
 #include "concentric_circles_controls.h"
+#include "salesman_experiment.h"
 
 // Function to get monitor information
 std::vector<GLFWmonitor*> get_monitors() {
@@ -131,14 +132,14 @@ int main() {
     bool has_second_monitor = monitors.size() > 1;
     
     // Create control window on primary monitor
-    GLFWwindow* control_window = glfwCreateWindow(1000, 1000, "Spotlight Controls", nullptr, nullptr);
+    GLFWwindow* control_window = glfwCreateWindow(1500, 1000, "Spotlight Controls", nullptr, nullptr);
     if (!control_window) {
         std::cerr << "Failed to create control window\n";
         glfwTerminate();
         return -1;
     }
     glfwMakeContextCurrent(control_window);
-    glfwSwapInterval(1); // enable vsync
+    glfwSwapInterval(0); // disable vsync for control window to reduce latency
 
     // Initialize Dear ImGui
     IMGUI_CHECKVERSION();
@@ -155,6 +156,11 @@ int main() {
         spotlight_window = create_borderless_window(monitors[1], control_window);
         if (!spotlight_window) {
             std::cerr << "Failed to create spotlight window\n";
+        } else {
+            // Disable VSync on spotlight window for minimum latency
+            glfwMakeContextCurrent(spotlight_window);
+            glfwSwapInterval(0);
+            glfwMakeContextCurrent(control_window);
         }
     }
 
@@ -202,22 +208,20 @@ int main() {
             RenderSpotlightControls(has_second_monitor);
             RenderGratingControls();
             RenderConcentricRingsControls();
+            RenderSalesmanExperimentControls();
         }
 
-        // Render control window
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(control_window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(control_window);
+        // Copy latest boxes data once per frame for consistency
+        std::vector<shaman::Object> current_frame_boxes;
+        {
+            std::lock_guard<std::mutex> lock(box_mutex);
+            current_frame_boxes = latest_boxes;
+        }
 
         // get start time for rendering spotlight
         uint64_t spotlight_timestamp = get_time_us();
 
-        // Render spotlight window if available
+        // Render spotlight window FIRST for minimum latency
         if (has_second_monitor && GetUseSecondMonitor() && spotlight_window && !glfwWindowShouldClose(spotlight_window)) {
             glfwMakeContextCurrent(spotlight_window);
 
@@ -236,6 +240,20 @@ int main() {
             // Draw gratings FIRST so they appear beneath everything else
             DrawMovingGratings(width, height, ImGui::GetTime());
             DrawConcentricRings(width, height, ImGui::GetTime());
+            DrawSalesmanExperiment(width, height, ImGui::GetTime());
+            // --- Salesman Experiment update logic ---
+            // Gather ring data from shaman (shared memory)
+            std::vector<std::pair<ImVec2, float>> ring_list;
+            for (const auto& obj : current_frame_boxes) {
+                float xcenter = obj.rect.x + obj.rect.width / 2.0f;
+                float ycenter = obj.rect.y - obj.rect.height / 2.0f;
+                float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
+                cx = width - cx;
+                float cy = (ycenter - 465) / 1172 * height;
+                float radius = GetCircleRadius() * height;
+                ring_list.emplace_back(ImVec2(cx / width, cy / height), radius);
+            }
+            UpdateSalesmanExperiment(width, height, ImGui::GetTime(), ring_list, get_serial(), get_pump_ids());
 
             // Actual central circle position in pixels
             ImVec2 central_pixel_pos = ImVec2(
@@ -246,23 +264,18 @@ int main() {
 
             // Accumulated push vector
             ImVec2 total_push = ImVec2(0, 0);
-
-            {
-                std::lock_guard<std::mutex> lock(box_mutex);
-                boxes = latest_boxes;
-             }
             
-            if (boxes.size() != RefPrevCount() && boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
+            if (current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to close door" << std::endl;
                 SendDoorCommand(false);
-            } else if (boxes.size() != RefPrevCount() && boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
+            } else if (current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to open door" << std::endl;
                 SendDoorCommand(true);
             }
-            RefPrevCount() = boxes.size();
+            RefPrevCount() = current_frame_boxes.size();
             
             float xcenter, ycenter;
-            for (const auto& obj : boxes) {
+            for (const auto& obj : current_frame_boxes) {
                 xcenter = obj.rect.x + obj.rect.width / 2.0f;
                 ycenter = obj.rect.y - obj.rect.height / 2.0f;
                 float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
@@ -390,6 +403,17 @@ int main() {
 
             glfwSwapBuffers(spotlight_window);
         }
+
+        // Render control window AFTER spotlight window to minimize spotlight latency
+        glfwMakeContextCurrent(control_window);
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(control_window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(control_window);
     }
 
     // Cleanup

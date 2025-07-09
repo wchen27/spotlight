@@ -5,7 +5,7 @@
 namespace {
 static bool use_second_monitor = true;
 static ImVec2 circle_center = ImVec2(0.5f, 0.5f);
-static float circle_radius = 0.12f;
+static float circle_radius = 0.1f;
 static ImVec4 circle_color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 static ImVec4 alternate_circle_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 static int circle_segments = 12;
