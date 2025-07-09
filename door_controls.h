@@ -8,3 +8,4 @@ void SendDoorCommand(bool open);
 int GetObjectLimit();
 void SetObjectLimit(int value);
 int& RefPrevCount();
+bool IsManualOverride();

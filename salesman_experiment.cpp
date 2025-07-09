@@ -24,7 +24,10 @@ static int intersection_time_ms = 500;
 static bool pump_check[3] = {false, false, false};
 static bool experiment_running = false;
 static double experiment_start_time = 0.0;
-static std::mt19937 rng((unsigned)std::chrono::system_clock::now().time_since_epoch().count());
+static unsigned int user_seed = 0; // User-configurable seed (0 = auto-generate)
+static unsigned int current_seed = 0; // The actual seed used for current experiment
+static bool reuse_last_seed = false; // Checkbox to reuse the last seed
+static std::mt19937 rng;
 
 // User-configurable color and segments for salesman circles
 static ImVec4 salesman_circle_color = ImVec4(1.0f, 0.8f, 0.2f, 1.0f);
@@ -34,15 +37,63 @@ int& RefSalesmanCircleSegments() { return salesman_circle_segments; }
 
 void RestartSalesmanExperiment() {
     circles.clear();
+    
+    // Set the seed for this experiment
+    if (reuse_last_seed && current_seed != 0) {
+        // Reuse the last seed
+        rng.seed(current_seed);
+    } else if (user_seed == 0) {
+        // Auto-generate seed from current time
+        current_seed = (unsigned)std::chrono::system_clock::now().time_since_epoch().count();
+        rng.seed(current_seed);
+    } else {
+        // Use user-specified seed
+        current_seed = user_seed;
+        rng.seed(current_seed);
+    }
+    
     std::uniform_real_distribution<float> xdist(0.1f, 0.9f);
     std::uniform_real_distribution<float> ydist(0.1f, 0.9f);
+    
     for (int i = 0; i < num_circles; ++i) {
         SalesmanCircle c;
-        c.center = ImVec2(xdist(rng), ydist(rng));
         c.radius = circle_radius;
         c.collected = false;
         c.intersect_start = 0.0;
         c.intersecting = false;
+        
+        // Try to place circle without overlapping existing ones
+        bool placed = false;
+        int attempts = 0;
+        const int max_attempts = 100; // Prevent infinite loop
+        
+        while (!placed && attempts < max_attempts) {
+            c.center = ImVec2(xdist(rng), ydist(rng));
+            
+            // Check if this position overlaps with any existing circle
+            bool overlaps = false;
+            for (const auto& existing : circles) {
+                float dx = c.center.x - existing.center.x;
+                float dy = c.center.y - existing.center.y;
+                float distance = sqrtf(dx * dx + dy * dy);
+                
+                // Add some padding between circles (1.2x radius instead of just touching)
+                float min_distance = (c.radius + existing.radius) * 1.2f / 1000.0f; // Convert to normalized space
+                
+                if (distance < min_distance) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            
+            if (!overlaps) {
+                placed = true;
+            }
+            attempts++;
+        }
+        
+        // If we couldn't place without overlap after many attempts, place anyway
+        // This handles cases where there's not enough space for all circles
         circles.push_back(c);
     }
     experiment_running = true;
@@ -60,6 +111,16 @@ void RenderSalesmanExperimentControls() {
         ImGui::SliderInt("Intersection Time (ms)", &intersection_time_ms, 100, 5000);
         ImGui::ColorEdit4("Circle Color", (float*)&salesman_circle_color);
         ImGui::SliderInt("Circle Segments", &salesman_circle_segments, 8, 128);
+        
+        // Seed controls
+        ImGui::Separator();
+        ImGui::Text("Random Seed Controls:");
+        ImGui::InputInt("Seed (0 = auto)", (int*)&user_seed);
+        if (user_seed < 0) user_seed = 0; // Ensure non-negative
+        ImGui::Checkbox("Reuse last seed", &reuse_last_seed);
+        ImGui::Text("Current experiment seed: %u", current_seed);
+        
+        ImGui::Separator();
         ImGui::Checkbox("Pump X", &pump_check[0]); ImGui::SameLine();
         ImGui::Checkbox("Pump Y", &pump_check[1]); ImGui::SameLine();
         ImGui::Checkbox("Pump Z", &pump_check[2]);

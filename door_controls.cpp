@@ -10,6 +10,7 @@ static int selected_door_port = -1;
 static std::vector<std::string> door_port_list;
 static int object_limit = 3;
 static int prev_count = -1;
+static bool manual_override = false; // Manual override flag
 }
 
 void RenderDoorControls() {
@@ -43,6 +44,14 @@ void RenderDoorControls() {
         if (ImGui::Button("Close Door")) {
             serial_door.send_door_command(false);
         }
+        
+        ImGui::Spacing();
+        ImGui::Checkbox("Manual Override", &manual_override);
+        if (manual_override) {
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "Automatic door control disabled");
+        } else {
+            ImGui::TextColored(ImVec4(0, 1, 0, 1), "Automatic door control enabled");
+        }
     }
     ImGui::Spacing();
     ImGui::Separator();
@@ -57,3 +66,4 @@ void SendDoorCommand(bool open) { serial_door.send_door_command(open); }
 int GetObjectLimit() { return object_limit; }
 void SetObjectLimit(int value) { object_limit = value; }
 int& RefPrevCount() { return prev_count; }
+bool IsManualOverride() { return manual_override; }

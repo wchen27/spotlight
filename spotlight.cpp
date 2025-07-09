@@ -195,6 +195,13 @@ int main() {
         // Poll and handle events (inputs, window resize, etc.)
         glfwPollEvents();
 
+        // Copy latest boxes data IMMEDIATELY for minimum latency
+        std::vector<shaman::Object> current_frame_boxes;
+        {
+            std::lock_guard<std::mutex> lock(box_mutex);
+            current_frame_boxes = latest_boxes;
+        }
+
         // Start the Dear ImGui frame for control window
         glfwMakeContextCurrent(control_window);
         ImGui_ImplOpenGL3_NewFrame();
@@ -211,13 +218,6 @@ int main() {
             RenderSalesmanExperimentControls();
         }
 
-        // Copy latest boxes data once per frame for consistency
-        std::vector<shaman::Object> current_frame_boxes;
-        {
-            std::lock_guard<std::mutex> lock(box_mutex);
-            current_frame_boxes = latest_boxes;
-        }
-
         // get start time for rendering spotlight
         uint64_t spotlight_timestamp = get_time_us();
 
@@ -231,27 +231,35 @@ int main() {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            // Set up OpenGL state once
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glOrtho(0, width, height, 0, -1, 1);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
+            glDisable(GL_DEPTH_TEST);  // Disable depth testing for 2D
+            glEnable(GL_BLEND);        // Enable blending for transparency
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             // Draw gratings FIRST so they appear beneath everything else
             DrawMovingGratings(width, height, ImGui::GetTime());
             DrawConcentricRings(width, height, ImGui::GetTime());
             DrawSalesmanExperiment(width, height, ImGui::GetTime());
             // --- Salesman Experiment update logic ---
-            // Gather ring data from shaman (shared memory)
+            // Gather ring data from shaman (shared memory) - optimized
             std::vector<std::pair<ImVec2, float>> ring_list;
+            ring_list.reserve(current_frame_boxes.size()); // Pre-allocate to avoid reallocations
+            const float inv_1172 = 1.0f / 1172.0f; // Cache division
+            const float width_offset = (width - height) * 0.5f; // Cache calculation
+            const float circle_radius = GetCircleRadius() * height; // Cache calculation
+            
             for (const auto& obj : current_frame_boxes) {
-                float xcenter = obj.rect.x + obj.rect.width / 2.0f;
-                float ycenter = obj.rect.y - obj.rect.height / 2.0f;
-                float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
+                float xcenter = obj.rect.x + obj.rect.width * 0.5f;
+                float ycenter = obj.rect.y - obj.rect.height * 0.5f;
+                float cx = (xcenter - 1020.0f) * inv_1172 * height + width_offset;
                 cx = width - cx;
-                float cy = (ycenter - 465) / 1172 * height;
-                float radius = GetCircleRadius() * height;
-                ring_list.emplace_back(ImVec2(cx / width, cy / height), radius);
+                float cy = (ycenter - 465.0f) * inv_1172 * height;
+                ring_list.emplace_back(ImVec2(cx / width, cy / height), circle_radius);
             }
             UpdateSalesmanExperiment(width, height, ImGui::GetTime(), ring_list, get_serial(), get_pump_ids());
 
@@ -265,10 +273,10 @@ int main() {
             // Accumulated push vector
             ImVec2 total_push = ImVec2(0, 0);
             
-            if (current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
+            if (!IsManualOverride() && current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to close door" << std::endl;
                 SendDoorCommand(false);
-            } else if (current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
+            } else if (!IsManualOverride() && current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
                 std::cout << "Sending door command to open door" << std::endl;
                 SendDoorCommand(true);
             }
