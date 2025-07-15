@@ -165,5 +165,8 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/amxbf16intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /home/user/src/spotlight/third_party/imgui/imstb_rectpack.h \
  /home/user/src/spotlight/third_party/imgui/imstb_truetype.h

@@ -1,7 +1,6 @@
 CMakeFiles/spotlight.dir/door_controls.cpp.o: \
  /home/user/src/spotlight/door_controls.cpp /usr/include/stdc-predef.h \
- /home/user/src/spotlight/door_controls.h \
- /home/user/src/spotlight/serial/serial.h /usr/include/c++/11/string \
+ /home/user/src/spotlight/door_controls.h /usr/include/c++/11/string \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -126,7 +125,8 @@ CMakeFiles/spotlight.dir/door_controls.cpp.o: \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/functional_hash.h \
  /usr/include/c++/11/bits/hash_bytes.h \
- /usr/include/c++/11/bits/basic_string.tcc /usr/include/c++/11/vector \
+ /usr/include/c++/11/bits/basic_string.tcc \
+ /home/user/src/spotlight/serial/serial.h /usr/include/c++/11/vector \
  /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \

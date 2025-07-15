@@ -256,9 +256,9 @@ int main() {
             for (const auto& obj : current_frame_boxes) {
                 float xcenter = obj.rect.x + obj.rect.width * 0.5f;
                 float ycenter = obj.rect.y - obj.rect.height * 0.5f;
-                float cx = (xcenter - 1020.0f) * inv_1172 * height + width_offset;
+                float cx = (xcenter - 153.0f) * inv_1172 * height + width_offset;
                 cx = width - cx;
-                float cy = (ycenter - 465.0f) * inv_1172 * height;
+                float cy = (ycenter - 460.0f) * inv_1172 * height;
                 ring_list.emplace_back(ImVec2(cx / width, cy / height), circle_radius);
             }
             UpdateSalesmanExperiment(width, height, ImGui::GetTime(), ring_list, get_serial(), get_pump_ids());
@@ -274,11 +274,11 @@ int main() {
             ImVec2 total_push = ImVec2(0, 0);
             
             if (!IsManualOverride() && current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() >= GetObjectLimit() && IsDoorSerialOpen()) {
-                std::cout << "Sending door command to close door" << std::endl;
-                SendDoorCommand(false);
+                std::cout << "Sending door command to close all doors" << std::endl;
+                SendDoorCommand("c1c2c3");
             } else if (!IsManualOverride() && current_frame_boxes.size() != RefPrevCount() && current_frame_boxes.size() < GetObjectLimit() && IsDoorSerialOpen()) {
-                std::cout << "Sending door command to open door" << std::endl;
-                SendDoorCommand(true);
+                std::cout << "Sending door command to open all doors" << std::endl;
+                SendDoorCommand("o1o2o3");
             }
             RefPrevCount() = current_frame_boxes.size();
             
@@ -286,9 +286,9 @@ int main() {
             for (const auto& obj : current_frame_boxes) {
                 xcenter = obj.rect.x + obj.rect.width / 2.0f;
                 ycenter = obj.rect.y - obj.rect.height / 2.0f;
-                float cx = (xcenter - 1020) / 1172 * height + (width - height) / 2;
+                float cx = (xcenter - GetCalibrationOffsetX()) / GetCalibrationScale() * height + (width - height) / 2;
                 cx = width - cx; // reflect so projection shows up correctly
-                float cy = (ycenter - 465) / 1172 * height;
+                float cy = (ycenter - GetCalibrationOffsetY()) / GetCalibrationScale() * height;
                 float radius = GetCircleRadius() * height;
                 if (GetCollisionEnabled()) {
                     // Calculate vector between centers

@@ -124,7 +124,6 @@ CMakeFiles/spotlight.dir/concentric_circles_controls.cpp.o: ../concentric_circle
 CMakeFiles/spotlight.dir/door_controls.cpp.o: ../door_controls.cpp \
   /usr/include/stdc-predef.h \
   ../door_controls.h \
-  ../serial/serial.h \
   /usr/include/c++/11/string \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -271,6 +270,7 @@ CMakeFiles/spotlight.dir/door_controls.cpp.o: ../door_controls.cpp \
   /usr/include/c++/11/bits/functional_hash.h \
   /usr/include/c++/11/bits/hash_bytes.h \
   /usr/include/c++/11/bits/basic_string.tcc \
+  ../serial/serial.h \
   /usr/include/c++/11/vector \
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
@@ -2150,6 +2150,10 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_draw.cpp.o: ../third_party/imgu
   /usr/lib/gcc/x86_64-linux-gnu/11/include/amxbf16intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/prfchwintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
+  /usr/include/stdint.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
   ../third_party/imgui/imstb_rectpack.h \
   ../third_party/imgui/imstb_truetype.h
 
@@ -2835,6 +2839,12 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bwintrin.h:
+
+/usr/include/wchar.h:
+
+/usr/include/c++/11/bits/cxxabi_init_exception.h:
+
 /usr/include/c++/11/cwchar:
 
 /usr/include/c++/11/bits/forward_list.h:
@@ -2872,10 +2882,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/bits/termios-tcflow.h:
 
 /usr/include/c++/11/new:
-
-../serial/serial.h:
-
-/usr/include/c++/11/stdexcept:
 
 /usr/include/c++/11/bits/stl_tree.h:
 
@@ -2927,6 +2933,10 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h:
 
+../concentric_circles_controls.cpp:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
 /usr/include/signal.h:
 
 /usr/include/strings.h:
@@ -2942,16 +2952,6 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
-../concentric_circles_controls.cpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/avx512bwintrin.h:
-
-/usr/include/wchar.h:
-
-/usr/include/c++/11/bits/cxxabi_init_exception.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/xsavesintrin.h:
 
@@ -3388,6 +3388,10 @@ CMakeFiles/spotlight.dir/third_party/imgui/imgui_widgets.cpp.o: ../third_party/i
 /usr/include/c++/11/bits/hash_bytes.h:
 
 /usr/include/c++/11/bits/basic_string.tcc:
+
+../serial/serial.h:
+
+/usr/include/c++/11/stdexcept:
 
 /usr/include/c++/11/vector:
 

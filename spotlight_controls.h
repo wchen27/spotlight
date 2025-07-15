@@ -46,4 +46,9 @@ float GetMaxRotationDelay();
 float& RefActualRotationDelay();
 float GetRotationDelay();
 double& RefRotationStartTime();
+
+// Calibration offset controls
+float GetCalibrationOffsetX();
+float GetCalibrationOffsetY();
+float GetCalibrationScale();
 // ...add more as needed for main loop rendering...

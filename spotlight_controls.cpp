@@ -46,6 +46,9 @@ static double dynamic_circle_start_time = -1.0;
 static bool collision_enabled = true;
 static bool calibrating = false;
 static bool dynamic_circle = false;
+static float calibration_offset_x = 545.0f;
+static float calibration_offset_y = 379.0f;
+static float calibration_scale = 1254.0f;
 }
 
 void RenderSpotlightControls(bool has_second_monitor) {
@@ -124,6 +127,9 @@ void RenderSpotlightControls(bool has_second_monitor) {
     ImGui::Separator();
     ImGui::Spacing();
     ImGui::Checkbox("Calibration Mode", &calibrating);
+    ImGui::SliderFloat("Calibration Offset X", &calibration_offset_x, -1920.0f, 1920.0f);
+    ImGui::SliderFloat("Calibration Offset Y", &calibration_offset_y, -1080.0f, 1080.0f);
+    ImGui::SliderFloat("Calibration Scale", &calibration_scale, 500.0f, 2000.0f);
     ImGui::End();
 }
 
@@ -170,3 +176,6 @@ float GetMaxRotationDelay() { return max_rotation_delay; }
 float& RefActualRotationDelay() { return actual_rotation_delay; }
 float GetRotationDelay() { return rotation_delay; }
 double& RefRotationStartTime() { return rotation_start_time; }
+float GetCalibrationOffsetX() { return calibration_offset_x; }
+float GetCalibrationOffsetY() { return calibration_offset_y; }
+float GetCalibrationScale() { return calibration_scale; }
